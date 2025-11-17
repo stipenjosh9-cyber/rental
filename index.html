@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Manajemen Sewa</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style type="text/tailwindcss">
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* bg-gray-900 */
+        }
+        /* Style scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #1f2937; }
+        ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+        
+        /* Style nav */
+        .nav-link.active {
+            background-color: #2563EB; /* bg-blue-600 */
+            color: white;
+            font-weight: 600;
+        }
+        .nav-link {
+            color: #D1D5DB; /* text-gray-300 */
+            font-weight: 500;
+        }
+        .nav-link:hover {
+            background-color: #374151; /* hover:bg-gray-700 */
+            color: white;
+        }
+        
+        /* Animasi modal (Fade + Scale) */
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes modalFadeOut {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.95); }
+        }
+        
+        /* Kelas untuk menerapkan animasi */
+        .modal-content-area.modal-showing {
+            animation: modalFadeIn 300ms ease-out;
+        }
+        .modal-content-area.modal-closing {
+            animation: modalFadeOut 300ms ease-in forwards;
+        }
+
+        /* (DIHAPUS) Animasi Landing Page telah dihapus */
+
+    </style>
+</head>
+<body class="text-gray-100">
+
+    <!-- (DIHAPUS) LANDING PAGE DIHAPUS -->
+
+    <!-- (DIUBAH) KONTEN UTAMA APLIKASI SEKARANG LANGSUNG TAMPIL -->
+    <div id="main-content" class="flex h-screen">
+
+        <!-- BAGIAN SIDEBAR NAVIGASI KIRI -->
+        <aside class="w-64 flex-shrink-0 bg-gray-800 p-6 hidden md:flex flex-col overflow-y-auto">
+            <h1 class="text-3xl font-extrabold text-blue-500 mb-6 mt-2 text-center" style="font-family: 'Poppins', sans-serif;">RentalYuk</h1>
+            
+            <!-- (BARU) Placeholder Foto Profil Sidebar -->
+            <img id="sidebar-profile-pic" 
+                 src="https://placehold.co/150x150/374151/E0E0E0?text=Profil" 
+                 alt="Profil" 
+                 class="w-24 h-24 object-cover rounded-lg mx-auto mb-6 shadow-md hidden transition-all duration-300">
+            
+            <nav class="space-y-2">
+                <a href="#" id="nav-dashboard" class="nav-link flex items-center px-4 py-3 rounded-lg transition-colors active" aria-current="page">
+                    <svg class="h-6 w-6 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" id="nav-inventory" class="nav-link flex items-center px-4 py-3 rounded-lg transition-colors">
+                    <svg class="h-6 w-6 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                    <span>Inventaris</span>
+                </a>
+                <a href="#" id="nav-stats" class="nav-link flex items-center px-4 py-3 rounded-lg transition-colors">
+                    <svg class="h-6 w-6 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
+                    <span>Statistik</span>
+                </a>
+                <a href="#" id="nav-laporan" class="nav-link flex items-center px-4 py-3 rounded-lg transition-colors">
+                    <svg class="h-6 w-6 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    <span>Laporan</span>
+                </a>
+                <a href="#" id="nav-settings" class="nav-link flex items-center px-4 py-3 rounded-lg transition-colors">
+                    <svg class="h-6 w-6 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.096 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    <span>Pengaturan</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Wrapper untuk konten utama yang bisa di-scroll -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            
+            <!-- KONTEN UTAMA -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-900 p-8">
+                
+                <!-- Wrapper Halaman Dashboard -->
+                <div id="page-dashboard">
+                    <!-- (DIUBAH) Judul dan Sapaan Dashboard -->
+                    <h2 class="text-3xl font-semibold text-white">Dashboard</h2>
+                    <p id="dashboard-greeting" class="text-xl text-gray-400 -mt-1 mb-6" style="font-family: 'Poppins', sans-serif; font-weight: 400;">Memuat data rental...</p>
+
+                    <!-- KARTU STATISTISTIK -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-gray-800 p-6 rounded-lg shadow-lg flex items-center">
+                            <div class="p-3 rounded-full bg-blue-600 bg-opacity-30 text-blue-400 mr-4">
+                                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-400">Total Barang</p>
+                                <p id="stat-total-items" class="text-2xl font-bold text-white">0</p>
+                            </div>
+                        </div>
+                        <div class="bg-gray-800 p-6 rounded-lg shadow-lg flex items-center">
+                            <div class="p-3 rounded-full bg-yellow-600 bg-opacity-30 text-yellow-400 mr-4">
+                                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-400">Sedang Disewa</p>
+                                <p id="stat-on-rent" class="text-2xl font-bold text-white">0</p>
+                            </div>
+                        </div>
+                        <div class="bg-gray-800 p-6 rounded-lg shadow-lg flex items-center">
+                            <div class="p-3 rounded-full bg-green-600 bg-opacity-30 text-green-400 mr-4">
+                                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-400">Tersedia</p>
+                                <p id="stat-available" class="text-2xl font-bold text-white">0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w-full">
+                        <div class="w-full flex flex-col gap-8">
+                            <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="text-xl font-semibold text-white">Daftar Sewa Aktif</h3>
+                                    <button id="addRentalBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg shadow-md transition-all">
+                                        + Tambah Sewa
+                                    </button>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-gray-700">
+                                        <thead class="bg-gray-700">
+                                            <tr>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Nama Barang</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Penyewa</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Sisa Waktu</th>
+                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">Sesi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="rentals-table-body" class="bg-gray-800 divide-y divide-gray-700">
+                                            <tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">Memuat data...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                                <h3 class="text-xl font-semibold text-white mb-4">Histori Sewaan Selesai</h3>
+                                <div class="overflow-x-auto max-h-64 overflow-y-auto">
+                                    <table class="min-w-full divide-y divide-gray-700">
+                                        <thead class="bg-gray-700">
+                                            <tr>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Barang</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Penyewa</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Durasi</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="history-table-body" class="bg-gray-800 divide-y divide-gray-700">
+                                            <tr><td colspan="4" class="px-4 py-3 text-center text-gray-500">Memuat data...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="text-center text-gray-400 py-6 mt-8">
+                        © 2025 RentalYuk. Dibuat dengan cinta untuk pemula.
+                    </footer>
+                </div>
+
+                <div id="page-stats" class="hidden">
+                    <h2 class="text-3xl font-semibold text-white">Statistik Penggunaan</h2>
+                    <p class="text-xl text-gray-400 -mt-1 mb-6" style="font-family: 'Poppins', sans-serif; font-weight: 400;">Total jam penggunaan berdasarkan item.</p>
+                    
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                        <div class="w-full max-w-md mx-auto">
+                            <canvas id="stats-pie-chart"></canvas>
+                        </div>
+                        <div id="stats-no-data" class="text-center text-gray-500 py-10 hidden">
+                            Belum ada data histori untuk ditampilkan di diagram.
+                        </div>
+                    </div>
+                </div>
+
+                <div id="page-laporan" class="hidden">
+                    <h2 class="text-3xl font-semibold text-white">Laporan Sewa Aktif</h2>
+                    <p class="text-xl text-gray-400 -mt-1 mb-6" style="font-family: 'Poppins', sans-serif; font-weight: 400;">Pantau semua perangkat yang sedang online.</p>
+                    
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-700">
+                                <thead class="bg-gray-700">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Penyewa</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Nama Barang</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Sisa Waktu</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="laporan-table-body" class="bg-gray-800 divide-y divide-gray-700">
+                                    <tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">Memuat data...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="page-inventory" class="hidden">
+                    <h2 class="text-3xl font-semibold text-white">Manajemen Inventaris</h2>
+                    <p class="text-xl text-gray-400 -mt-1 mb-6" style="font-family: 'Poppins', sans-serif; font-weight: 400;">Kelola semua barang rental Anda.</p>
+                    
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-semibold text-white mb-4">Daftar Item</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-700">
+                                <thead class="bg-gray-700">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Nama</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Warna</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Tersedia</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Total</th>
+                                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="inventory-table-body" class="bg-gray-800 divide-y divide-gray-700">
+                                    <tr><td colspan="5" class="px-4 py-3 text-center text-gray-500">Memuat data...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <button id="add-inventory-btn" class="mt-4 w-full md:w-auto bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg shadow-md transition-all">
+                            + Tambah Item Baru
+                        </button>
+                        <button id="seed-data-btn" class="hidden mt-2 w-full md:w-auto bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg shadow-md transition-all">
+                            Isi Data Awal (Contoh)
+                        </button>
+                    </div>
+                </div>
+
+                <div id="page-settings" class="hidden">
+                    <h2 class="text-3xl font-semibold text-white">Pengaturan</h2>
+                    <p class="text-xl text-gray-400 -mt-1 mb-6" style="font-family: 'Poppins', sans-serif; font-weight: 400;">Kelola preferensi aplikasi Anda.</p>
+                    
+                    <!-- (BARU) Bagian untuk Edit Nama Rental -->
+                    <div class="bg-gray-800 p-8 rounded-lg shadow-lg mb-8">
+                        <h3 class="text-xl font-semibold text-white mb-6">Nama Rental</h3>
+                        <form id="rental-name-form">
+                            <label for="settings-rental-name" class="block text-sm font-medium text-gray-300 mb-2">Nama Rental Anda (Tampil di Dashboard)</label>
+                            <input type="text" id="settings-rental-name" placeholder="Contoh: Super PS Rental" required
+                                   class="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500">
+                            <div class="text-right mt-4">
+                                <button type="submit" 
+                                        class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-5 rounded-lg shadow-md transition-all">
+                                    Simpan Nama
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- (DIUBAH) Bagian Profil disesuaikan -->
+                    <div class="bg-gray-800 p-8 rounded-lg shadow-lg mb-8">
+                        <h3 class="text-xl font-semibold text-white mb-6">Profil</h3>
+                        <div class="flex flex-col md:flex-row items-center gap-6">
+                            <img id="settings-profile-preview" 
+                                 src="https://placehold.co/150x150/374151/E0E0E0?text=Profil" 
+                                 alt="Preview" 
+                                 class="w-36 h-36 rounded-full object-cover shadow-md transition-all duration-300 ease-in-out">
+                            
+                            <div class="flex flex-col items-center md:items-start">
+                                <p class="text-gray-400 mb-3 text-center md:text-left">
+                                    Pilih gambar baru (.jpg/.png, maks 500KB).
+                                </p>
+                                <input type="file" id="profile-pic-upload" class="hidden" accept="image/jpeg, image/png">
+                                <label for="profile-pic-upload" 
+                                       class="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-5 rounded-lg shadow-md transition-all">
+                                    Pilih Gambar
+                                </label>
+                            </div>
+                        </div>
+                        <div class="text-right mt-6">
+                            <button id="save-profile-btn" 
+                                    class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-5 rounded-lg shadow-md transition-all opacity-50 cursor-not-allowed"
+                                    disabled>
+                                Simpan Perubahan Profil
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-800 p-8 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-semibold text-white mb-4">Harga Sewa</h3>
+                        <p class="text-gray-400">Opsi pengaturan harga akan tersedia di sini.</p>
+                    </div>
+                </div>
+
+            </main> 
+            
+        </div>
+    </div>
+
+
+    <!-- (BARU) MODAL UNTUK SETUP AWAL -->
+    <div id="setup-modal" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center p-4 z-50">
+        <div class="modal-content-area bg-gray-800 rounded-lg shadow-xl p-8 w-full max-w-lg">
+            <h4 class="text-3xl font-semibold mb-2 text-white text-center" style="font-family: 'Poppins', sans-serif;">Selamat Datang di RentalYuk!</h4>
+            <p class="text-center text-gray-300 mb-8">Mari kita siapkan akun rental Anda.</p>
+            
+            <form id="setup-form">
+                <div class="space-y-6">
+                    <!-- 1. Nama Rental (Wajib) -->
+                    <div>
+                        <label for="setup-rental-name" class="block text-sm font-medium text-gray-300 mb-1">
+                            Nama Rental Anda <span class="text-red-400">*</span>
+                        </label>
+                        <input type="text" id="setup-rental-name" name="rentalName" required placeholder="Contoh: Budi PS Center" 
+                               class="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500">
+                    </div>
+                    
+                    <!-- 2. Foto Profil (Opsional) -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">
+                            Foto Profil / Logo Rental (Opsional)
+                        </label>
+                        <div class="flex items-center gap-4">
+                            <img id="setup-profile-preview" 
+                                 src="https://placehold.co/100x100/374151/E0E0E0?text=Logo" 
+                                 alt="Preview" 
+                                 class="w-24 h-24 rounded-lg object-cover shadow-md transition-all duration-300 ease-in-out">
+                            <div>
+                                <input type="file" id="setup-profile-upload" class="hidden" accept="image/jpeg, image/png">
+                                <label for="setup-profile-upload" 
+                                       class="cursor-pointer bg-gray-600 hover:bg-gray-500 text-white font-medium py-2 px-4 rounded-lg shadow-md transition-all">
+                                    Pilih Gambar...
+                                </label>
+                                <p class="text-xs text-gray-400 mt-2">Maks 500KB. Akan tampil di sidebar.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-10">
+                    <button type="submit" class="w-full md:w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all text-lg">
+                        Simpan & Mulai
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- MODAL UNTUK TAMBAH SEWA -->
+    <div id="rental-modal" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center p-4 z-40">
+        <div class="modal-content-area bg-gray-800 rounded-lg shadow-xl p-8 w-full max-w-md">
+            <h4 class="text-2xl font-semibold mb-6 text-white">Formulir Sewa Baru</h4>
+            <form id="rental-form">
+                <div class="space-y-4">
+                    <div>
+                        <label for="item-select" class="block text-sm font-medium text-gray-300 mb-1">Pilih Barang (Hanya yang tersedia)</label>
+                        <select id="item-select" name="itemId" required class="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"></select>
+                    </div>
+                    <div>
+                        <label for="renter-name" class="block text-sm font-medium text-gray-300 mb-1">Nama Penyewa</label>
+                        <input type="text" id="renter-name" name="renterName" required placeholder="Contoh: Budi" class="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500">
+                    </div>
+                    <div>
+                        <label for="rental-duration" class="block text-sm font-medium text-gray-300 mb-1">Durasi Sewa</label>
+                        <select id="rental-duration" name="durationMinutes" required class="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="30">30 Menit</option>
+                            <option value="60" selected>1 Jam</option>
+                            <option value="90">1 Jam 30 Menit</option>
+                            <option value="120">2 Jam</option>
+                            <option value="180">3 Jam</option>
+                            <option value="300">5 Jam</option>
+                            <option value="720">12 Jam</option>
+                            <option value="1440">24 Jam (1 Hari)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-4 mt-8">
+                    <button type="button" id="cancelBtn" class="bg-gray-600 hover:bg-gray-500 text-gray-100 font-medium py-2 px-5 rounded-lg transition-all">Batal</button>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-5 rounded-lg shadow-md transition-all">Mulai Sewa</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- MODAL UNTUK TAMBAH INVENTARIS -->
+    <div id="inventory-modal" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center p-4 z-40">
+        <div class="modal-content-area bg-gray-800 rounded-lg shadow-xl p-8 w-full max-w-md">
+            <h4 class="text-2xl font-semibold mb-6 text-white">Formulir Item Inventaris</h4>
+            <form id="inventory-form">
+                <div class="space-y-4">
+                    <div>
+                        <label for="item-id" class="block text-sm font-medium text-gray-300 mb-1">ID Item (Unik, huruf besar, tanpa spasi)</label>
+                        <input type="text" id="item-id" name="itemId" required placeholder="Contoh: PS5SLIM" class="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500 uppercase">
+                    </div>
+                    <div>
+                        <label for="item-name" class="block text-sm font-medium text-gray-300 mb-1">Nama Item</label>
+                        <input type="text" id="item-name" name="itemName" required placeholder="Contoh: PlayStation 5 Slim" class="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500">
+                    </div>
+                    <div>
+                        <label for="item-category" class="block text-sm font-medium text-gray-300 mb-1">Kategori</label>
+                        <input type="text" id="item-category" name="itemCategory" required value="Konsol" class="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500">
+                    </div>
+                    <div>
+                        <label for="item-stock" class="block text-sm font-medium text-gray-300 mb-1">Total Stok Awal</label>
+                        <input type="number" id="item-stock" name="itemStock" required min="1" value="1" class="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500">
+                    </div>
+                </div>
+                <div class="flex justify-end gap-4 mt-8">
+                    <button type="button" id="inventory-cancel-btn" class="bg-gray-600 hover:bg-gray-500 text-gray-100 font-medium py-2 px-5 rounded-lg transition-all">Batal</button>
+                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-5 rounded-lg shadow-md transition-all">Simpan Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL UNTUK EDIT STOK -->
+    <div id="stock-modal" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center p-4 z-40">
+        <div class="modal-content-area bg-gray-800 rounded-lg shadow-xl p-8 w-full max-w-md">
+            <h4 class="text-2xl font-semibold mb-2 text-white">Edit Stok</h4>
+            <p class="text-lg text-blue-400 mb-6" id="stock-item-name">Nama Item</p>
+            <form id="stock-form">
+                <input type="hidden" id="stock-item-id">
+                <div>
+                    <label for="stock-amount" class="block text-sm font-medium text-gray-300 mb-1">Jumlah</label>
+                    <input type="number" id="stock-amount" name="stockAmount" required min="1" value="1" class="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="flex justify-end gap-4 mt-8">
+                    <button type="button" id="stock-cancel-btn" class="bg-gray-600 hover:bg-gray-500 text-gray-100 font-medium py-2 px-5 rounded-lg transition-all">Batal</Sbutton>
+                    <button type="button" id="stock-reduce-btn" class="bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-2 px-5 rounded-lg shadow-md transition-all">Kurangi Stok</button>
+                    <button type="button" id="stock-add-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-5 rounded-lg shadow-md transition-all">Tambah Stok</button>
+
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL KUSTOM UNTUK PESAN/ERROR/KONFIRMASI -->
+    <div id="message-modal" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center p-4 z-50">
+        <div class="modal-content-area bg-gray-800 rounded-lg shadow-xl p-8 w-full max-w-sm text-center">
+            <p id="message-text" class="text-lg text-white mb-6">Pesan default</p>
+            <div class="flex justify-center gap-4">
+                <button id="message-cancel-btn" class="bg-gray-600 hover:bg-gray-500 text-gray-100 font-medium py-2 px-6 rounded-lg shadow-md transition-all hidden">
+                    Batal
+                </button>
+                <button id="message-ok-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg shadow-md transition-all">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- SCRIPT FIREBASE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, doc, collection, onSnapshot, addDoc, updateDoc, deleteDoc, 
+            increment, writeBatch, getDocs, setDoc, setLogLevel, getDoc
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // === 1. KONFIGURASI DAN INISIALISASI FIREBASE ===
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'rental-yuk-app';
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        setLogLevel('debug');
+
+        // === 2. DATA STATE LOKAL (CACHE) ===
+        let localInventory = [];
+        let localRentals = [];
+        let localHistory = [];
+        let confirmCallback = null; 
+        let countdownTimerInterval = null;
+        let selectedSettingsPicDataUrl = null; // (DIUBAH) Untuk Halaman Setting
+        let selectedSetupPicDataUrl = null;    // (BARU) Untuk Modal Setup
+        
+        let statsChart = null;
+        const statsChartCanvas = document.getElementById('stats-pie-chart');
+        const statsNoData = document.getElementById('stats-no-data');
+
+        // === 3. REFERENSI KOLEKSI FIREBASE ===
+        let inventoryCol, rentalsCol, historyCol, profileDocRef;
+        let userId;
+
+        // === 4. SELEKTOR DOM ===
+        const navLinks = document.querySelectorAll('.nav-link');
+        const pages = {
+            dashboard: document.getElementById('page-dashboard'),
+            inventory: document.getElementById('page-inventory'),
+            laporan: document.getElementById('page-laporan'),
+            settings: document.getElementById('page-settings'),
+            stats: document.getElementById('page-stats')
+        };
+        const mainContent = document.getElementById('main-content');
+        
+        // (BARU) Selektor untuk Setup, Profil, dan Sapaan
+        const setupModal = document.getElementById('setup-modal');
+        const setupForm = document.getElementById('setup-form');
+        const setupRentalName = document.getElementById('setup-rental-name');
+        const setupProfileUpload = document.getElementById('setup-profile-upload');
+        const setupProfilePreview = document.getElementById('setup-profile-preview');
+        
+        const sidebarProfilePic = document.getElementById('sidebar-profile-pic');
+        const dashboardGreeting = document.getElementById('dashboard-greeting');
+        
+        const rentalNameForm = document.getElementById('rental-name-form');
+        const settingsRentalName = document.getElementById('settings-rental-name');
+        const settingsProfilePreview = document.getElementById('settings-profile-preview');
+        const profilePicUpload = document.getElementById('profile-pic-upload');
+        const saveProfileBtn = document.getElementById('save-profile-btn');
+
+        // Selektor yang sudah ada
+        const inventoryTableBody = document.getElementById('inventory-table-body');
+        const rentalsTableBody = document.getElementById('rentals-table-body');
+        const historyTableBody = document.getElementById('history-table-body');
+        const laporanTableBody = document.getElementById('laporan-table-body');
+        const statTotal = document.getElementById('stat-total-items');
+        const statOnRent = document.getElementById('stat-on-rent');
+        const statAvailable = document.getElementById('stat-available');
+        const rentalModal = document.getElementById('rental-modal');
+        const addRentalBtn = document.getElementById('addRentalBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const rentalForm = document.getElementById('rental-form');
+        const itemSelect = document.getElementById('item-select');
+        const inventoryModal = document.getElementById('inventory-modal');
+        const addInventoryBtn = document.getElementById('add-inventory-btn');
+        const inventoryForm = document.getElementById('inventory-form');
+        const inventoryCancelBtn = document.getElementById('inventory-cancel-btn');
+        const stockModal = document.getElementById('stock-modal');
+        const stockForm = document.getElementById('stock-form');
+        const stockItemId = document.getElementById('stock-item-id');
+        const stockItemName = document.getElementById('stock-item-name');
+        const stockAmount = document.getElementById('stock-amount');
+        const stockCancelBtn = document.getElementById('stock-cancel-btn');
+        const stockReduceBtn = document.getElementById('stock-reduce-btn');
+        const stockAddBtn = document.getElementById('stock-add-btn');
+        const messageModal = document.getElementById('message-modal');
+        const messageText = document.getElementById('message-text');
+        const messageOkBtn = document.getElementById('message-ok-btn');
+        const messageCancelBtn = document.getElementById('message-cancel-btn');
+        const seedDataBtn = document.getElementById('seed-data-btn');
+        
+        // (DIHAPUS) Selektor Landing Page
+        // const landingPage = document.getElementById('landing-page');
+        // const enterBtn = document.getElementById('enter-dashboard-btn');
+
+
+        // === 5. FUNGSI-FUNGSI RENDER (UI) ===
+        
+        function showMessage(message) {
+            console.log("Menampilkan Pesan:", message);
+            messageText.textContent = message;
+            messageOkBtn.textContent = "OK";
+            messageOkBtn.classList.remove('hidden');
+            messageCancelBtn.classList.add('hidden');
+            openModal(messageModal);
+            confirmCallback = null; 
+        }
+
+        function showConfirm(message, onConfirm) {
+            console.log("Menampilkan Konfirmasi:", message);
+            messageText.textContent = message;
+            messageOkBtn.textContent = "Ya, Lanjutkan";
+            messageOkBtn.classList.remove('hidden');
+            messageCancelBtn.classList.remove('hidden');
+            openModal(messageModal);
+            confirmCallback = onConfirm;
+        }
+
+        function renderInventoryTable() { 
+            if (!inventoryTableBody) return; 
+            inventoryTableBody.innerHTML = ''; 
+            if (localInventory.length === 0) {
+                inventoryTableBody.innerHTML = `<tr><td colspan="5" class="px-4 py-3 text-center text-gray-500">Inventaris kosong.</td></tr>`;
+                seedDataBtn.classList.remove('hidden');
+                return;
+            }
+            seedDataBtn.classList.add('hidden');
+            const sortedInventory = [...localInventory].sort((a, b) => a.name.localeCompare(b.name));
+            sortedInventory.forEach(item => {
+                const availableStock = item.totalStock - item.rentedStock;
+                const availableClass = availableStock > 0 ? 'text-green-400' : 'text-gray-500';
+                 const deleteClass = item.rentedStock > 0 
+                    ? 'opacity-50 cursor-not-allowed' 
+                    : 'text-red-500 hover:text-red-700';
+                const row = `
+                    <tr>
+                        <td class="px-4 py-3 whitespace-nowrap"><div class="text-sm font-medium text-gray-100">${item.name}</div></td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <span class="h-4 w-4 rounded-full inline-block border border-gray-600" style="background-color: ${item.color || '#888'}"></span>
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm font-bold ${availableClass}">${availableStock}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-300">${item.totalStock}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                            <button data-id="${item.id}" class="edit-stock-btn text-blue-400 hover:text-blue-600 transition-colors text-xs">Edit</button>
+                            <button data-id="${item.id}" class="delete-item-btn ${deleteClass} text-xs" ${item.rentedStock > 0 ? 'disabled' : ''}>Hapus</button>
+                        </td>
+                    </tr>`;
+                inventoryTableBody.innerHTML += row; 
+            });
+        }
+        
+        function renderRentals() {
+            if (!rentalsTableBody) return; 
+            rentalsTableBody.innerHTML = ''; 
+            if (localRentals.length === 0) {
+                rentalsTableBody.innerHTML = `<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">Tidak ada data sewa aktif.</td></tr>`;
+                return;
+            }
+            const sortedRentals = [...localRentals].sort((a, b) => a.startTime.localeCompare(b.startTime));
+            sortedRentals.forEach(rental => {
+                const item = localInventory.find(inv => inv.id === rental.itemId);
+                const itemName = item ? item.name : 'Barang Dihapus';
+                const row = `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-100">${itemName}</div>
+                            <div class="text-xs text-gray-400">ID: ${rental.itemId}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${rental.renterName}</td>
+                        <td classid="countdown-cell" class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-yellow-400" 
+                            data-start-time="${rental.startTime}" data-duration-minutes="${rental.durationMinutes}">
+                            Menghitung...
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button data-rental-id="${rental.id}" data-item-id="${rental.itemId}" class="text-red-500 hover:text-red-700 font-semibold transition-colors return-btn">
+                                Akhiri Sesi
+                            </button>
+                        </td>
+                    </tr>`;
+                rentalsTableBody.innerHTML += row;
+            });
+            updateAllCountdowns();
+        }
+
+        function renderLaporan() {
+            if (!laporanTableBody) return; 
+            laporanTableBody.innerHTML = ''; 
+            if (localRentals.length === 0) {
+                laporanTableBody.innerHTML = `<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">Tidak ada sewa yang sedang aktif.</td></tr>`;
+                return;
+            }
+            const sortedRentals = [...localRentals].sort((a, b) => a.startTime.localeCompare(b.startTime));
+            sortedRentals.forEach(rental => {
+                const item = localInventory.find(inv => inv.id === rental.itemId);
+                const itemName = item ? item.name : 'Barang Dihapus';
+                const row = `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="flex items-center">
+                                <span class="h-3 w-3 bg-green-500 rounded-full inline-block mr-2 animate-pulse"></span>
+                                <span class="text-sm font-medium text-green-400">Online</span>
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${rental.renterName}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-100">${itemName}</div>
+                            <div class="text-xs text-gray-400">ID: ${rental.itemId}</div>
+                        </td>
+                        <td classid="countdown-cell" class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-yellow-400" 
+                            data-start-time="${rental.startTime}" data-duration-minutes="${rental.durationMinutes}">
+                            Menghitung...
+                        </td>
+                    </tr>`;
+                laporanTableBody.innerHTML += row;
+            });
+            updateAllCountdowns();
+        }
+
+        function renderHistory() {
+            if (!historyTableBody) return; 
+            historyTableBody.innerHTML = '';
+            if (localHistory.length === 0) {
+                historyTableBody.innerHTML = `<tr><td colspan="4" class="px-4 py-3 text-center text-gray-500">Belum ada histori.</td></tr>`;
+                return;
+            }
+            const reversedHistory = [...localHistory].sort((a, b) => b.returnDate.localeCompare(a.returnDate));
+            reversedHistory.forEach(entry => {
+                const item = localInventory.find(inv => inv.id === entry.itemId);
+                const itemName = item ? item.name : 'Barang Dihapus';
+                const durationHours = (entry.durationMinutes || 0) / 60;
+                const durationText = durationHours < 1 ? `${entry.durationMinutes || 0} m` : `${durationHours.toFixed(1)} j`;
+
+                const row = `
+                    <tr>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-100">${itemName}</div>
+                            <div class="text-xs text-gray-400">ID: ${entry.itemId}</div>
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-300">${entry.renterName}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-300">${durationText}</td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-800 text-green-200">
+                                ${entry.status}
+                            </span>
+                        </td>
+                    </tr>`;
+                historyTableBody.innerHTML += row;
+            });
+        }
+
+        function updateStats() {
+            const totalItems = localInventory.reduce((sum, item) => sum + item.totalStock, 0);
+            const onRentItems = localInventory.reduce((sum, item) => sum + item.rentedStock, 0);
+            const availableItems = totalItems - onRentItems;
+            if (statTotal) statTotal.textContent = totalItems;
+            if (statOnRent) statOnRent.textContent = onRentItems;
+            if (statAvailable) statAvailable.textContent = availableItems;
+        }
+
+        function populateItemSelect() {
+            if (!itemSelect) return; 
+            itemSelect.innerHTML = '<option value="" disabled selected>Pilih barang...</option>';
+            const availableItems = localInventory.filter(item => (item.totalStock - item.rentedStock) > 0);
+            availableItems.forEach(item => {
+                const availableStock = item.totalStock - item.rentedStock;
+                const option = `<option value="${item.id}">${item.name} (Stok: ${availableStock})</option>`;
+                itemSelect.innerHTML += option;
+            });
+        }
+
+        // === 6. FUNGSI-FUNGSI LOGIKA (Interaksi & Firebase) ===
+
+        function formatTime(ms) {
+            let seconds = Math.floor(ms / 1000);
+            let minutes = Math.floor(seconds / 60);
+            let hours = Math.floor(minutes / 60);
+            seconds = seconds % 60;
+            minutes = minutes % 60;
+            const pad = (num) => num.toString().padStart(2, '0');
+            return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+        }
+
+        function updateAllCountdowns() {
+            const countdownCells = document.querySelectorAll('[classid="countdown-cell"]');
+            const now = new Date();
+            countdownCells.forEach(cell => {
+                const startTimeStr = cell.dataset.startTime;
+                const durationMinutes = parseInt(cell.dataset.durationMinutes, 10);
+                if (!startTimeStr || isNaN(durationMinutes)) {
+                    cell.textContent = "Error Data";
+                    return;
+                }
+                const startTime = new Date(startTimeStr);
+                const endTime = new Date(startTime.getTime() + durationMinutes * 60 * 1000);
+                const remainingMs = endTime.getTime() - now.getTime();
+                if (remainingMs <= 0) {
+                    cell.textContent = "Waktu Habis";
+                    cell.classList.remove('text-yellow-400');
+                    cell.classList.add('text-red-500');
+                } else {
+                    cell.textContent = formatTime(remainingMs);
+                    cell.classList.add('text-yellow-400');
+                    cell.classList.remove('text-red-500');
+                }
+            });
+        }
+        
+        function generateRandomHexColor() {
+            return '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+        }
+
+        function generateUniqueColor(existingColors = []) {
+            let newColor;
+            let attempts = 0;
+            do {
+                newColor = generateRandomHexColor();
+                attempts++;
+                if (attempts > 50) break;
+            } while (existingColors.includes(newColor));
+            return newColor;
+        }
+        
+        async function seedDatabase() {
+            try {
+                console.log("Mengecek data awal...");
+                const snapshot = await getDocs(inventoryCol);
+                if (snapshot.empty) {
+                    console.log("Database kosong. Menambahkan data awal...");
+                    const existingColors = [];
+                    const mockInventory = [
+                        { id: 'PS1', name: 'PlayStation 1', category: 'Konsol', totalStock: 0, rentedStock: 0 },
+                        { id: 'PS2', name: 'PlayStation 2', category: 'Konsol', totalStock: 0, rentedStock: 0 },
+                        { id: 'PS3', name: 'PlayStation 3', category: 'Konsol', totalStock: 0, rentedStock: 0 },
+                        { id: 'PS4', name: 'PlayStation 4', category: 'Konsol', totalStock: 0, rentedStock: 0 },
+                        { id: 'PS5', name: 'PlayStation 5', category: 'Konsol', totalStock: 0, rentedStock: 0 },
+                    ];
+                    
+                    const batch = writeBatch(db);
+                    mockInventory.forEach(item => {
+                        const color = generateUniqueColor(existingColors);
+                        existingColors.push(color);
+                        const docRef = doc(inventoryCol, item.id); 
+                        batch.set(docRef, {...item, color: color});
+                    });
+                    await batch.commit();
+                    showMessage("Data contoh berhasil ditambahkan dengan stok 0!");
+                } else {
+                    showMessage("Database sudah berisi data.");
+                }
+            } catch (error) {
+                console.error("Error saat seeding database: ", error);
+                showMessage(`Error: ${error.message}`);
+            }
+        }
+        
+        async function handleAddRental(e) {
+            e.preventDefault();
+            const formData = new FormData(rentalForm);
+            const newItemId = formData.get('itemId');
+            const newRenterName = formData.get('renterName');
+            const newDurationMinutes = parseInt(formData.get('durationMinutes'), 10);
+            if (!newItemId || !newRenterName || isNaN(newDurationMinutes)) {
+                showMessage("Harap isi semua field.");
+                return;
+            }
+            try {
+                const newRental = {
+                    itemId: newItemId,
+                    renterName: newRenterName,
+                    startTime: new Date().toISOString(),
+                    durationMinutes: newDurationMinutes
+                };
+                const batch = writeBatch(db);
+                const rentalDocRef = doc(rentalsCol);
+                batch.set(rentalDocRef, newRental);
+                const itemDocRef = doc(inventoryCol, newItemId);
+                batch.update(itemDocRef, { rentedStock: increment(1) });
+                await batch.commit();
+                console.log("Sewa baru berhasil ditambahkan");
+                closeModal(rentalModal);
+                rentalForm.reset();
+            } catch (error) {
+                console.error("Error menambahkan sewa baru: ", error);
+                showMessage(`Error: ${error.message}`);
+            }
+        }
+
+        async function handleReturnRental(e) {
+            const targetButton = e.target.closest('.return-btn');
+            if (targetButton) {
+                const rentalIdToReturn = targetButton.dataset.rentalId;
+                const itemIdToReturn = targetButton.dataset.itemId;
+                if (!rentalIdToReturn || !itemIdToReturn) {
+                    showMessage("Error: ID barang atau ID sewa tidak ditemukan.");
+                    return;
+                }
+                try {
+                    const rentalToMove = localRentals.find(rental => rental.id === rentalIdToReturn);
+                    if (!rentalToMove) {
+                         showMessage("Error: Data sewa tidak ditemukan.");
+                         return;
+                    }
+
+                    const historyEntry = {
+                        itemId: rentalToMove.itemId,
+                        renterName: rentalToMove.renterName,
+                        returnDate: new Date().toISOString().split('T')[0],
+                        status: 'Selesai',
+                        durationMinutes: rentalToMove.durationMinutes
+                    };
+
+                    const batch = writeBatch(db);
+                    const rentalDocRef = doc(rentalsCol, rentalIdToReturn);
+                    batch.delete(rentalDocRef);
+                    const historyDocRef = doc(historyCol);
+                    batch.set(historyDocRef, historyEntry);
+                    const itemDocRef = doc(inventoryCol, itemIdToReturn);
+                    batch.update(itemDocRef, { rentedStock: increment(-1) });
+                    await batch.commit();
+                    console.log("Barang berhasil dikembalikan");
+                } catch (error) {
+                    console.error("Error mengembalikan barang: ", error);
+                    showMessage(`Error: ${error.message}`);
+                }
+            }
+        }
+
+        async function handleAddInventory(e) {
+            e.preventDefault();
+            const formData = new FormData(inventoryForm);
+            const itemId = formData.get('itemId').toUpperCase().trim();
+            const itemName = formData.get('itemName').trim();
+            const itemCategory = formData.get('itemCategory').trim();
+            const itemStock = parseInt(formData.get('itemStock'));
+            if (!itemId || !itemName || !itemCategory || isNaN(itemStock)) {
+                showMessage("Harap isi semua field dengan benar.");
+                return;
+            }
+            if (itemStock <= 0) {
+                showMessage("Stok awal harus lebih dari 0.");
+                return;
+            }
+            try {
+                const itemDocRef = doc(inventoryCol, itemId);
+                const docSnap = await getDoc(itemDocRef);
+                if (docSnap.exists()) {
+                    showMessage(`Error: Item dengan ID "${itemId}" sudah ada.`);
+                    return;
+                }
+                
+                const existingColors = localInventory.map(i => i.color).filter(Boolean);
+                const newItemColor = generateUniqueColor(existingColors);
+
+                const newItem = {
+                    name: itemName,
+                    category: itemCategory,
+                    totalStock: itemStock,
+                    rentedStock: 0,
+                    color: newItemColor
+                };
+                await setDoc(itemDocRef, newItem);
+                showMessage(`Item "${itemName}" berhasil ditambahkan.`);
+                closeModal(inventoryModal);
+                inventoryForm.reset();
+            } catch (error) {
+                console.error("Error menambahkan item inventaris: ", error);
+                showMessage(`Error: ${error.message}`);
+            }
+        }
+        
+        function handleManageInventoryClick(e) {
+            const editBtn = e.target.closest('.edit-stock-btn');
+            const deleteBtn = e.target.closest('.delete-item-btn');
+            if (editBtn) {
+                const id = editBtn.dataset.id;
+                const item = localInventory.find(i => i.id === id);
+                if (item) {
+                    stockItemId.value = id;
+                    stockItemName.textContent = item.name;
+                    stockAmount.value = 1;
+                    openModal(stockModal);
+                }
+            }
+            if (deleteBtn) {
+                const id = deleteBtn.dataset.id;
+                const item = localInventory.find(i => i.id === id);
+                if (item) {
+                    if (item.rentedStock > 0) {
+                        showMessage("Error: Tidak bisa menghapus item yang sedang disewa.");
+                        return;
+                    }
+                    showConfirm(`Anda yakin ingin menghapus "${item.name}"? Aksi ini tidak bisa dibatalkan.`, () => {
+                        deleteInventoryItem(id);
+                    });
+                }
+            }
+        }
+
+        async function deleteInventoryItem(id) {
+            try {
+                const itemDocRef = doc(inventoryCol, id);
+                await deleteDoc(itemDocRef);
+                showMessage("Item berhasil dihapus.");
+            } catch (error) {
+                console.error("Error menghapus item: ", error);
+                showMessage(`Error: ${error.message}`);
+            }
+        }
+        
+        async function handleUpdateStock(action) {
+            const id = stockItemId.value;
+            const amount = parseInt(stockAmount.value);
+            if (isNaN(amount) || amount <= 0) {
+                showMessage("Jumlah harus angka positif.");
+                return;
+            }
+            const item = localInventory.find(i => i.id === id);
+            if (!item) {
+                showMessage("Error: Item tidak ditemukan.");
+                return;
+            }
+            try {
+                const itemDocRef = doc(inventoryCol, id);
+                if (action === 'add') {
+                    await updateDoc(itemDocRef, {
+                        totalStock: increment(amount)
+                    });
+                    showMessage(`Stok "${item.name}" berhasil ditambah ${amount}.`);
+                } else if (action === 'reduce') {
+                    const newTotalStock = item.totalStock - amount;
+                    if (newTotalStock < item.rentedStock) {
+                        showMessage(`Error: Stok total tidak bisa lebih kecil dari yang sedang disewa (${item.rentedStock}).`);
+                        return;
+                    }
+                    if (newTotalStock < 0) {
+                        showMessage("Error: Stok total tidak bisa negatif.");
+                        return;
+                    }
+                    await updateDoc(itemDocRef, {
+                        totalStock: increment(-amount)
+                    });
+                    showMessage(`Stok "${item.name}" berhasil dikurangi ${amount}.`);
+                }
+                closeModal(stockModal);
+            } catch (error)
+                {
+                console.error("Error update stok: ", error);
+                showMessage(`Error: ${error.message}`);
+            }
+        }
+
+        // (BARU) Fungsi generik untuk memvalidasi & membaca file gambar
+        function handleImageFile(file, imgElement, onLoaded) {
+            if (!file) return;
+            
+            if (!['image/jpeg', 'image/png'].includes(file.type)) {
+                showMessage("Error: Hanya file .jpg atau .png yang diizinkan.");
+                return;
+            }
+
+            const maxSize = 500 * 1024;
+            if (file.size > maxSize) {
+                showMessage("Error: Ukuran file terlalu besar. Maksimal 500KB.");
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const dataUrl = event.target.result;
+                imgElement.src = dataUrl;
+                // Pastikan gambar yg di-preview kotak (sesuai permintaan)
+                imgElement.classList.remove('rounded-full');
+                imgElement.classList.add('rounded-lg');
+                onLoaded(dataUrl); // Kirim data URL ke callback
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // (BARU) Handler preview untuk modal setup
+        function handleSetupPicPreview(e) {
+            handleImageFile(e.target.files[0], setupProfilePreview, (dataUrl) => {
+                selectedSetupPicDataUrl = dataUrl;
+            });
+            e.target.value = ""; // Reset input
+        }
+
+        // (DIUBAH) Handler preview untuk halaman settings
+        function handleSettingsPicPreview(e) {
+            handleImageFile(e.target.files[0], settingsProfilePreview, (dataUrl) => {
+                selectedSettingsPicDataUrl = dataUrl;
+                // Aktifkan tombol simpan
+                saveProfileBtn.disabled = false;
+                saveProfileBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            });
+            e.target.value = ""; // Reset input
+        }
+
+        // (BARU) Handler untuk menyimpan NAMA RENTAL dari Halaman Settings
+        async function handleRentalNameSave(e) {
+            e.preventDefault();
+            const newName = settingsRentalName.value.trim();
+            if (!newName) {
+                showMessage("Nama rental tidak boleh kosong.");
+                return;
+            }
+            try {
+                await updateDoc(profileDocRef, { rentalName: newName });
+                showMessage("Nama rental berhasil diperbarui.");
+            } catch (error) {
+                console.error("Error updating rental name: ", error);
+                showMessage(`Error: ${error.message}`);
+            }
+        }
+
+        // (DIUBAH) Handler untuk menyimpan FOTO PROFIL dari Halaman Settings
+        async function handleProfilePicUpload() {
+            if (!selectedSettingsPicDataUrl) {
+                showMessage("Anda belum memilih gambar baru.");
+                return;
+            }
+
+            saveProfileBtn.disabled = true;
+            saveProfileBtn.textContent = "Menyimpan...";
+            saveProfileBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            
+            try {
+                await updateDoc(profileDocRef, { photoURL: selectedSettingsPicDataUrl });
+                selectedSettingsPicDataUrl = null;
+                showMessage("Gambar profil berhasil diperbarui!");
+            } catch (error) {
+                console.error("Error saving profile picture: ", error);
+                showMessage(`Error: ${error.message}`);
+            } finally {
+                saveProfileBtn.textContent = "Simpan Perubahan Profil";
+                // Tombol tetap disabled sampai gambar baru dipilih lagi
+            }
+        }
+
+        // (BARU) Handler untuk submit MODAL SETUP
+        async function handleSetupSubmit(e) {
+            e.preventDefault();
+            const rentalName = setupRentalName.value.trim();
+            if (!rentalName) {
+                showMessage("Nama Rental wajib diisi untuk melanjutkan.");
+                return;
+            }
+            
+            const setupButton = setupForm.querySelector('button[type="submit"]');
+            setupButton.disabled = true;
+            setupButton.textContent = "Menyimpan...";
+
+            try {
+                // Buat dokumen profil baru
+                await setDoc(profileDocRef, { 
+                    rentalName: rentalName, 
+                    photoURL: selectedSetupPicDataUrl || null 
+                });
+                
+                // Setup selesai, tutup modal
+                closeModal(setupModal);
+                
+                // (PENTING) (DIPERBAIKI) Sekarang inisialisasi sisa aplikasi
+                initializeMainAppListeners();
+                setupRealtimeListeners();
+                navigateTo('dashboard');
+
+            } catch (error) {
+                console.error("Error saving initial setup: ", error);
+                showMessage(`Error: ${error.message}`);
+                setupButton.disabled = false;
+                setupButton.textContent = "Simpan & Mulai";
+            }
+        }
+
+
+        function openModal(modalElement) {
+            modalElement.classList.remove('hidden');
+            modalElement.classList.add('flex');
+            const modalContent = modalElement.querySelector('.modal-content-area');
+            if (modalContent) {
+                modalContent.classList.remove('modal-closing');
+                modalContent.classList.add('modal-showing');
+            }
+        }
+
+        function closeModal(modalElement) {
+            const modalContent = modalElement.querySelector('.modal-content-area');
+            if (modalContent) {
+                modalContent.classList.remove('modal-showing');
+                modalContent.classList.add('modal-closing');
+                setTimeout(() => {
+                    modalElement.classList.add('hidden');
+                    modalElement.classList.remove('flex');
+                    modalContent.classList.remove('modal-closing');
+                }, 300);
+            } else {
+                modalElement.classList.add('hidden');
+                modalElement.classList.remove('flex');
+            }
+        }
+        
+        function navigateTo(pageId) {
+            Object.values(pages).forEach(page => page.classList.add('hidden'));
+            if (pages[pageId]) {
+                pages[pageId].classList.remove('hidden');
+            }
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.id === `nav-${pageId}`) {
+                    link.classList.add('active');
+                }
+            });
+            updateAllCountdowns();
+            
+            if (pageId === 'stats') {
+                renderStatsPage();
+            }
+        }
+        
+        function initChart() {
+            if (statsChart) {
+                statsChart.destroy();
+            }
+            
+            Chart.defaults.color = '#D1D5DB';
+            Chart.defaults.font.family = "'Inter', 'sans-serif'";
+
+            const ctx = statsChartCanvas.getContext('2d');
+            statsChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Total Jam Penggunaan',
+                        data: [],
+                        backgroundColor: [],
+                        borderColor: '#1f2937',
+                        borderWidth: 2,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                padding: 15
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += context.parsed.toFixed(1) + ' jam';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderStatsPage() {
+            if (!statsChart) initChart();
+
+            const itemUsage = {};
+            localHistory.forEach(entry => {
+                if (!entry.durationMinutes) return; 
+                const hours = entry.durationMinutes / 60;
+                const id = entry.itemId;
+                if (!itemUsage[id]) {
+                    itemUsage[id] = 0;
+                }
+                itemUsage[id] += hours;
+            });
+
+            const labels = [];
+            const data = [];
+            const colors = [];
+
+            Object.keys(itemUsage).forEach(itemId => {
+                const item = localInventory.find(i => i.id === itemId);
+                const itemName = item ? item.name : 'Item Dihapus';
+                const itemColor = item ? item.color : '#888888';
+                
+                labels.push(itemName);
+                data.push(itemUsage[itemId]);
+                colors.push(itemColor);
+            });
+
+            if (data.length === 0) {
+                statsChartCanvas.classList.add('hidden');
+                statsNoData.classList.remove('hidden');
+            } else {
+                statsChartCanvas.classList.remove('hidden');
+                statsNoData.classList.add('hidden');
+            }
+
+            statsChart.data.labels = labels;
+            statsChart.data.datasets[0].data = data;
+            statsChart.data.datasets[0].backgroundColor = colors;
+            statsChart.update();
+        }
+
+        function setupRealtimeListeners() {
+            // (BARU) Listener untuk data PROFIL (Nama & Foto)
+            onSnapshot(profileDocRef, (doc) => {
+                const defaultPreview = "https://placehold.co/150x150/374151/E0E0E0?text=Profil";
+                
+                if (doc.exists()) {
+                    const data = doc.data();
+                    const rentalName = data.rentalName || "Rental Anda";
+                    const photoURL = data.photoURL;
+                    
+                    // Update Sapaan Dashboard
+                    dashboardGreeting.textContent = `Selamat datang di ${rentalName}!`;
+                    // Update field di Halaman Settings
+                    settingsRentalName.value = rentalName;
+                    
+                    // Update Foto Profil
+                    if (photoURL) {
+                        // Tampilkan di Sidebar (Kotak)
+                        sidebarProfilePic.src = photoURL;
+                        sidebarProfilePic.classList.remove('hidden');
+                        
+                        // Tampilkan di Settings (Kotak)
+                        settingsProfilePreview.src = photoURL;
+                        settingsProfilePreview.classList.remove('rounded-full');
+                        settingsProfilePreview.classList.add('rounded-lg');
+                    } else {
+                        // Sembunyikan di Sidebar
+                        sidebarProfilePic.classList.add('hidden');
+                        
+                        // Tampilkan placeholder di Settings (Bulat)
+                        settingsProfilePreview.src = defaultPreview;
+                        settingsProfilePreview.classList.add('rounded-full');
+                        settingsProfilePreview.classList.remove('rounded-lg');
+                    }
+                } else {
+                    // Seharusnya tidak terjadi jika logika setup benar
+                    dashboardGreeting.textContent = "Harap selesaikan setup.";
+                }
+            }, (error) => {
+                console.error("Error listening to profile doc: ", error);
+                dashboardGreeting.textContent = "Gagal memuat data rental.";
+            });
+
+            // Listener yang sudah ada
+            onSnapshot(inventoryCol, (snapshot) => {
+                console.log("Snapshot inventaris diterima");
+                localInventory = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderInventoryTable();
+                updateStats();
+                populateItemSelect();
+                renderRentals();
+                renderHistory();
+                renderLaporan();
+                if (pages.stats.classList.contains('hidden') === false) {
+                    renderStatsPage();
+                }
+            }, (error) => console.error("Error listening ke inventory: ", error));
+
+            onSnapshot(rentalsCol, (snapshot) => {
+                console.log("Snapshot rentals diterima");
+                localRentals = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderRentals();
+                renderLaporan();
+                updateStats(); 
+            }, (error) => console.error("Error listening ke rentals: ", error));
+
+            onSnapshot(historyCol, (snapshot) => {
+                console.log("Snapshot histori diterima");
+                localHistory = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderHistory();
+                if (pages.stats.classList.contains('hidden') === false) {
+                    renderStatsPage();
+                }
+            }, (error) => console.error("Error listening ke history: ", error));
+            
+            if (countdownTimerInterval) clearInterval(countdownTimerInterval);
+            countdownTimerInterval = setInterval(updateAllCountdowns, 1000);
+        }
+        
+        // (BARU) Fungsi untuk menginisialisasi event listener utama aplikasi
+        function initializeMainAppListeners() {
+            addRentalBtn.addEventListener('click', () => openModal(rentalModal));
+            cancelBtn.addEventListener('click', () => closeModal(rentalModal));
+            rentalModal.addEventListener('click', (e) => { if (e.target === rentalModal) closeModal(rentalModal); });
+            addInventoryBtn.addEventListener('click', () => openModal(inventoryModal));
+            inventoryCancelBtn.addEventListener('click', () => closeModal(inventoryModal));
+            inventoryModal.addEventListener('click', (e) => { if (e.target === inventoryModal) closeModal(inventoryModal); });
+            stockCancelBtn.addEventListener('click', () => closeModal(stockModal));
+            stockModal.addEventListener('click', (e) => { if (e.target === stockModal) closeModal(stockModal); });
+            stockAddBtn.addEventListener('click', () => handleUpdateStock('add'));
+            stockReduceBtn.addEventListener('click', () => handleUpdateStock('reduce'));
+            
+            messageOkBtn.addEventListener('click', () => {
+                if (confirmCallback) {
+                    confirmCallback();
+                    confirmCallback = null;
+                }
+                closeModal(messageModal);
+            });
+            messageCancelBtn.addEventListener('click', () => {
+                confirmCallback = null;
+                closeModal(messageModal);
+            });
+            
+            document.getElementById('nav-dashboard').addEventListener('click', (e) => { e.preventDefault(); navigateTo('dashboard'); });
+            document.getElementById('nav-inventory').addEventListener('click', (e) => { e.preventDefault(); navigateTo('inventory'); });
+            document.getElementById('nav-laporan').addEventListener('click', (e) => { e.preventDefault(); navigateTo('laporan'); });
+            document.getElementById('nav-settings').addEventListener('click', (e) => { e.preventDefault(); navigateTo('settings'); });
+            document.getElementById('nav-stats').addEventListener('click', (e) => { e.preventDefault(); navigateTo('stats'); });
+            
+            rentalForm.addEventListener('submit', handleAddRental);
+            inventoryForm.addEventListener('submit', handleAddInventory);
+            seedDataBtn.addEventListener('click', seedDatabase);
+
+            // Listener untuk Halaman Settings
+            rentalNameForm.addEventListener('submit', handleRentalNameSave);
+            profilePicUpload.addEventListener('change', handleSettingsPicPreview);
+            saveProfileBtn.addEventListener('click', handleProfilePicUpload);
+            
+            // Listener dinamis (tabel)
+            rentalsTableBody.addEventListener('click', handleReturnRental);
+            inventoryTableBody.addEventListener('click', handleManageInventoryClick);
+
+            // Inisialisasi Chart & Navigasi
+            initChart();
+            navigateTo('dashboard');
+        }
+        
+        // === 7. INISIALISASI APLIKASI ===
+        
+        async function main() {
+            // (DIHAPUS) Listener tombol landing page dihapus
+
+            try {
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Otentikasi Firebase Gagal: ", error);
+                showMessage(`Error Otentikasi: ${error.message}.`);
+                return;
+            }
+
+            // (DIUBAH) Logika inti dipindah ke onAuthStateChanged
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    console.log("User terdeteksi:", user.uid);
+                    userId = user.uid;
+                    
+                    // Tentukan semua path
+                    const basePath = `/artifacts/${appId}/users/${userId}`;
+                    inventoryCol = collection(db, `${basePath}/inventory`);
+                    // (DIPERBAIKI) Mengganti 'baseAsem' menjadi 'basePath'
+                    rentalsCol = collection(db, `${basePath}/rentals`);
+                    historyCol = collection(db, `${basePath}/rentalHistory`);
+                    profileDocRef = doc(db, `artifacts/${appId}/users/${userId}/profile/main`);
+                    
+                    // (PENTING) Cek status setup sebelum menjalankan aplikasi
+                    const profileDocSnap = await getDoc(profileDocRef);
+                    
+                    if (!profileDocSnap.exists() || !profileDocSnap.data().rentalName) {
+                        // JALUR 1: PENGGUNA BARU / SETUP BELUM LENGKAP
+                        console.log("User setup incomplete. Opening setup modal.");
+                        // Tampilkan modal setup
+                        openModal(setupModal);
+                        // Pasang listener HANYA untuk modal setup
+                        setupForm.addEventListener('submit', handleSetupSubmit);
+                        setupProfileUpload.addEventListener('change', handleSetupPicPreview);
+                    } else {
+                        // JALUR 2: PENGGUNA LAMA / SETUP SUDAH SELESAI
+                        console.log("User already set up. Initializing app.");
+                        // Langsung jalankan aplikasi
+                        initializeMainAppListeners();
+                        setupRealtimeListeners();
+                        navigateTo('dashboard');
+                    }
+                }
+            });
+        }
+
+        main().catch(err => {
+            console.error("Error kritis di fungsi main:", err);
+            showMessage(`Error Kritis: ${err.message}`);
+        });
+    </script>
+
+</body>
+</html
