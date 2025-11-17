@@ -490,11 +490,9 @@
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'rental-yuk-app';
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        setLogLevel('debug');
-
+        // (DIUBAH) Deklarasi variabel global, tapi inisialisasi nanti di main()
+        let app, auth, db; 
+        
         // === 2. DATA STATE LOKAL (CACHE) ===
         let localInventory = [];
         let localRentals = [];
@@ -1421,7 +1419,25 @@
         // === 7. INISIALISASI APLIKASI ===
         
         async function main() {
-            // (DIHAPUS) Listener tombol landing page dihapus
+            // (BARU) Pengecekan konfigurasi sebelum inisialisasi
+            if (!firebaseConfig.apiKey) {
+                console.error("Firebase config is missing or invalid (no apiKey).");
+                document.getElementById('main-content').innerHTML = `
+                    <div class="flex items-center justify-center h-screen p-8 text-center">
+                        <div>
+                            <h2 class="text-2xl font-bold text-red-500 mb-4">Error Konfigurasi Firebase</h2>
+                            <p class="text-gray-300">Variabel <code>__firebase_config</code> tidak ditemukan atau tidak valid.</p>
+                            <p class="text-gray-400 mt-2">Aplikasi tidak dapat dijalankan tanpa konfigurasi Firebase yang benar.</p>
+                        </div>
+                    </div>`;
+                return; // Hentikan eksekusi
+            }
+
+            // (BARU) Inisialisasi Firebase sekarang aman dan dipindahkan ke sini
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+            setLogLevel('debug');
 
             try {
                 if (initialAuthToken) {
@@ -1479,4 +1495,4 @@
     </script>
 
 </body>
-</html
+</html>
